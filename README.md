@@ -33,7 +33,7 @@ Dashboard monitoring jaringan ISP yang modern, minimalis, ringan, dan siap produ
 └── .env.example
 ```
 
-## Instalasi
+## Instalasi (Linux / Umum)
 
 1. Copy environment:
    ```bash
@@ -50,6 +50,54 @@ Dashboard monitoring jaringan ISP yang modern, minimalis, ringan, dan siap produ
 4. Login default:
    - Username: `admin`
    - Password: `admin123`
+
+## Cara Run dengan XAMPP di Windows
+
+1. **Install XAMPP** (Apache + MySQL) dan pastikan service **Apache** serta **MySQL** jalan dari XAMPP Control Panel.
+2. **Copy project** ini ke folder web XAMPP, misalnya:
+   ```text
+   C:\xampp\htdocs\genie-monitor
+   ```
+3. **Buat file `.env`** dari `.env.example`:
+   - Buka folder project.
+   - Copy `.env.example` menjadi `.env`.
+   - Sesuaikan DB (default XAMPP biasanya tetap cocok):
+     ```env
+     DB_HOST=127.0.0.1
+     DB_PORT=3306
+     DB_DATABASE=genie_monitor
+     DB_USERNAME=root
+     DB_PASSWORD=
+     ```
+4. **Buat database & import SQL**:
+   - Buka `http://localhost/phpmyadmin`
+   - Create database: `genie_monitor` (collation `utf8mb4_unicode_ci`)
+   - Masuk ke database tersebut → tab **Import** → pilih file `sql/schema.sql` → klik **Go**
+5. **Atur DocumentRoot ke folder `public`** (direkomendasikan, lebih aman):
+   - Edit file Apache vhost (contoh: `C:\xampp\apache\conf\extra\httpd-vhosts.conf`), tambahkan:
+     ```apache
+     <VirtualHost *:80>
+         ServerName genie-monitor.local
+         DocumentRoot "C:/xampp/htdocs/genie-monitor/public"
+         <Directory "C:/xampp/htdocs/genie-monitor/public">
+             AllowOverride All
+             Require all granted
+         </Directory>
+     </VirtualHost>
+     ```
+   - Tambahkan hosts entry di `C:\Windows\System32\drivers\etc\hosts`:
+     ```text
+     127.0.0.1 genie-monitor.local
+     ```
+   - Restart Apache.
+   - Akses: `http://genie-monitor.local/index.php?page=login`
+
+   **Alternatif cepat (tanpa vhost)**
+   - Akses langsung: `http://localhost/genie-monitor/public/index.php?page=login`
+6. **Login awal**:
+   - Username: `admin`
+   - Password: `admin123`
+7. **Ganti password default** setelah login untuk keamanan production.
 
 ## Konfigurasi Nginx (Production)
 
